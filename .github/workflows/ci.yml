@@ -1,0 +1,21 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main, "claude/**"]
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  # `npm run check` is check.mjs, not astro check. It covers dead links and
+  # assets, colours with no base :root token, stray client JS, the size
+  # budget, and the language-discipline rules. Keep it a required step.
+  build:
+    uses: shamwari-ai/.github/.github/workflows/reusable-ci-astro-npm.yml@main
+
+  secrets:
+    uses: shamwari-ai/.github/.github/workflows/reusable-gitleaks.yml@main
